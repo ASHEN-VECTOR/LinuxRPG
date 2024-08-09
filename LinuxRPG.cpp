@@ -1,7 +1,7 @@
 #include <iostream> // For input/output operations
 #include <string> // For string manipulation
 #include <vector> // For dynamic arrays
-#include <map> // For key-value pair storage
+#include <map> // For kgey-value pair storage
 #include <algorithm> // for various algorithms like sorting
 #include <sstream> // for string stream processing
 
