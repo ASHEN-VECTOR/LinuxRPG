@@ -44,6 +44,30 @@ public:
 // - The constructor creates a "/home" directory with a "user" subdirectory
 // - This is just our starting point and can be expanded later. 
 
+//----- Define the NPC (Non-Player Character) class
+class NPC {
+    std::string name; // Name of the NPC
+    std::string description; // Description of the NPC
+    std:: string dialogue; // What the NPC says when talked to
+
+    // Constructor to initialize an NPC with name, description, and dialogue
+    NPC(std::string n, std::string d, std::string di)
+        : name(n), description(d), dialogue(di) {}
+};
+
+//Define the Monster class for potential enemies in our game
+class Monster {
+public:
+    std::string name;           // Name of the monster
+    std::string description;    // Description of the monster
+    int health;                 // Health points of the monster
+
+    // Constructor to initialize a Monster with name, description, and health
+    Monster(std::string n, std:: string d, int h)
+        : name(n), description(d), health(h) {}
+};
+
+
 //The main function and entry point of my program 
 int main(){
     //Prints a greeting to the user
