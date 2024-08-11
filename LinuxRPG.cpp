@@ -67,6 +67,46 @@ public:
         : name(n), description(d), health(h) {}
 };
 
+//Define the Quest class to represent player objectives
+
+class Quest{
+public: std::string name;           //Name of the quest
+        std::string description;    //Description of the quest
+        std::string status;         //Current status of the quest (e.g., "active", "completed")
+
+        //Constructor to initialize a Quest with name, description, and status
+        Quest(std::string n, std::string d, std::string s)
+        : name(n), description(d), status(s) {}
+};
+
+// Define the main Game class to manage game state and logic
+class Game {
+private:
+    FileSystem fileSystem;      //  Our game world
+    std::string currentPath;    //  Player's current location
+    std::vector inventory;      //  Player's inventory
+    std::vector quests;         //  Active Quests
+    std::map> npcs;             //  NPCs organized by location
+    std::map> monsters;         //  Monsters by location
+
+public:
+    // Constructor to initialize the game state
+    Game() : currentPath("/home/user")  {
+        // Initialize player's inventory
+        inventory = {"rusty_key", "digital_compass", "encrypted scroll"};
+
+        // Initialize quests
+        quests = {
+            Quest("Debug the Kernel", "Find and fix the bug in the heart of the system", "active"),
+            Quest("Recover Lost Data","Retrieve the imporant files from a corrupted drive.", "active"),
+            Quest("The Fourth Wall", "Investigate the strange girl who seems to know more than she should.", "active")
+        };
+
+        //Initialize NPCs
+        npcs["/home/user"] = 
+    }
+}
+
 
 //The main function and entry point of my program 
 int main(){
