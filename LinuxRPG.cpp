@@ -1,7 +1,7 @@
 #include <iostream> // For input/output operations
 #include <string> // For string manipulation
 #include <vector> // For dynamic arrays
-#include <map> // For kgey-value pair storage
+#include <map> // For key-value pair storage
 #include <algorithm> // for various algorithms like sorting
 #include <sstream> // for string stream processing
 
@@ -45,67 +45,7 @@ public:
 // - This is just our starting point and can be expanded later. 
 
 //----- Define the NPC (Non-Player Character) class
-class NPC {
-    std::string name; // Name of the NPC
-    std::string description; // Description of the NPC
-    std:: string dialogue; // What the NPC says when talked to
 
-    // Constructor to initialize an NPC with name, description, and dialogue
-    NPC(std::string n, std::string d, std::string di)
-        : name(n), description(d), dialogue(di) {}
-};
-
-//Define the Monster class for potential enemies in our game
-class Monster {
-public:
-    std::string name;           // Name of the monster
-    std::string description;    // Description of the monster
-    int health;                 // Health points of the monster
-
-    // Constructor to initialize a Monster with name, description, and health
-    Monster(std::string n, std:: string d, int h)
-        : name(n), description(d), health(h) {}
-};
-
-//Define the Quest class to represent player objectives
-
-class Quest{
-public: std::string name;           //Name of the quest
-        std::string description;    //Description of the quest
-        std::string status;         //Current status of the quest (e.g., "active", "completed")
-
-        //Constructor to initialize a Quest with name, description, and status
-        Quest(std::string n, std::string d, std::string s)
-        : name(n), description(d), status(s) {}
-};
-
-// Define the main Game class to manage game state and logic
-class Game {
-private:
-    FileSystem fileSystem;      //  Our game world
-    std::string currentPath;    //  Player's current location
-    std::vector inventory;      //  Player's inventory
-    std::vector quests;         //  Active Quests
-    std::map> npcs;             //  NPCs organized by location
-    std::map> monsters;         //  Monsters by location
-
-public:
-    // Constructor to initialize the game state
-    Game() : currentPath("/home/user")  {
-        // Initialize player's inventory
-        inventory = {"rusty_key", "digital_compass", "encrypted scroll"};
-
-        // Initialize quests
-        quests = {
-            Quest("Debug the Kernel", "Find and fix the bug in the heart of the system", "active"),
-            Quest("Recover Lost Data","Retrieve the imporant files from a corrupted drive.", "active"),
-            Quest("The Fourth Wall", "Investigate the strange girl who seems to know more than she should.", "active")
-        };
-
-        //Initialize NPCs
-        npcs["/home/user"] = 
-    }
-}
 
 
 //The main function and entry point of my program 
