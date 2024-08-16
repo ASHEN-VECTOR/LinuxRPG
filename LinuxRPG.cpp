@@ -117,18 +117,6 @@ public:
         };
     }
 
-    // Method to handle commands from the player
-    void handleCommand(const std::string& command) {
-        if (command == "inventory") {
-            std::cout << "Inventory: ";
-            for (const auto& item : inventory) {
-                std::cout << item << " ";
-            }
-            std::cout << std::endl;
-        }
-        //Add more command handling logic here
-    }
-
     // Main game loop
     void run() {
         std::string command;
@@ -141,7 +129,45 @@ public:
     }
 };
 
-// Main game loop
+// Process and execute player commands
+void handleCommand(const std::string&cmd) {
+    //Split the command into words
+    std::vector words;
+    std::istringstream iss(cmd);
+    std::string word;
+    while (iss >> word) {
+        words.push_back(word);
+    }
+
+// If no command was entered, return
+if (words.empty()) return;
+
+// Extract the main command and it's arguements
+std::string command = words[0];
+std::vector args(words.begin() + 1, words.end());
+
+// Execute the appropriate action based on the command
+if (command == "help") {
+        showHelp();
+}   else if (command == "pwd") {
+        showCurrentPath();
+}   else if (command == "ls") {
+        listDirectory(args);
+}   else if (command == "cd") {
+        changeDirectory(args);
+}   else if (command == "cat") {
+        catFile(args);
+}   else if (command == "inventory") {
+        showInventory();
+}   else if (command == "quests") {
+        showQuests();
+}   else if (command == "talk") {
+        talkToNPC(args);
+    } else {
+        std::cout << "Command not recognized. Try 'help' for a list of commands." << std::endl;
+    }
+}
+
 
 
 
