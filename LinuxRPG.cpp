@@ -91,6 +91,7 @@ private:
     std::map<std::string, std::vector<Monster>> monsters;         //  Monsters by location
 
 public:
+
     // Constructor to initialize the game state
     Game() : currentPath("/home/user")  {
         // Initialize player's inventory
@@ -127,12 +128,23 @@ public:
             handleCommand (command);
         }
     }
+    
+        // Declarations for the functions
+    void handleCommand(const std::string& cmd);
+    void showHelp();
+    void showCurrentPath() const;
+    void listDirectory(const std::vector<std::string>& args, const std::string& currentPath, const FileSystem& fileSystem) const;
+    void changeDirectory(const std::vector<std::string>& args, std::string& currentPath, const FileSystem& fileSystem);
+    void catFile(const std::vector<std::string>& args, const std::string& currentPath, const FileSystem& fileSystem) const;
+    void showInventory() const;  // No additional arguments needed
+    void showQuests() const;  // No additional arguments needed
+    void talkToNPC(const std::vector<std::string>& args, const std::string& currentPath, const std::map<std::string, std::vector<NPC>>& npcs);
 };
 
 // Process and execute player commands
-void handleCommand(const std::string&cmd) {
+void Game::handleCommand(const std::string&cmd) {
     //Split the command into words
-    std::vector words;
+    std::vector<std::string> words;
     std::istringstream iss(cmd);
     std::string word;
     while (iss >> word) {
@@ -144,7 +156,7 @@ if (words.empty()) return;
 
 // Extract the main command and it's arguements
 std::string command = words[0];
-std::vector args(words.begin() + 1, words.end());
+std::vector<std::string> args(words.begin() + 1, words.end());
 
 // Execute the appropriate action based on the command
 if (command == "help") {
@@ -152,29 +164,152 @@ if (command == "help") {
 }   else if (command == "pwd") {
         showCurrentPath();
 }   else if (command == "ls") {
-        listDirectory(args);
+        listDirectory(args, currentPath, fileSystem);
 }   else if (command == "cd") {
-        changeDirectory(args);
+        changeDirectory(args, currentPath, fileSystem);
 }   else if (command == "cat") {
-        catFile(args);
+        catFile(args, currentPath, fileSystem);
 }   else if (command == "inventory") {
         showInventory();
 }   else if (command == "quests") {
         showQuests();
 }   else if (command == "talk") {
-        talkToNPC(args);
+        talkToNPC(args, currentPath, npcs);
     } else {
         std::cout << "Command not recognized. Try 'help' for a list of commands." << std::endl;
     }
 }
 
+// Display available commands
+void Game::showHelp() {
+    std::cout << "Available commands:" << std::endl;
+    std::cout << "  help         - Show this help message" << std::endl;
+    std::cout << "  pwd          - Print current directory" << std::endl;
+    std::cout << "  ls           - List directory contents" << std::endl;
+    std::cout << "  cd [dir]     - Change directory" << std::endl;
+    std::cout << "  cat [file]   - View file contents" << std::endl;
+    std::cout << "  inventory    - Show inventory" << std::endl;
+    std::cout << "  quests       - Show active quests" << std::endl;
+    std::cout << "  talk [npc]   - Talk to an NPC" << std::endl;
+    std::cout << "  exit         - Exit the game" << std::endl;
+}
 
+// Display current path
+void Game::showCurrentPath() const {
+    std::cout << currentPath << std::endl;
+}
 
+// List contents of a directory
+void Game::listDirectory(const std::vector<std::string>& args, const std::string& currentPath, const FileSystem& fileSystem) const {
+    std::string path = currentPath;
+    if (!args.empty()) path = args[0];
+
+    auto nodeIterator = fileSystem.nodes.find(path);
+    if (nodeIterator == fileSystem.nodes.end()) {
+        std::cout << "Directory not found: " << path << std::endl;
+        return;
+    }
+
+    for (const auto& entry : nodeIterator->second) {
+        if (!entry.second.hidden) {
+            std::cout << entry.first << "\t" << entry.second.type << "\t" << entry.second.description << std::endl;
+        }
+    }
+}
+
+// Change current directory
+void Game::changeDirectory(const std::vector<std::string>& args, std::string& currentPath, const FileSystem& fileSystem) {
+    if (args.empty()) {
+        std::cout << "Usage: cd [directory]" << std::endl;
+        return;
+    }
+
+    std:: string newPath = args[0];
+    if (newPath[0] != '/') {
+        newPath = currentPath + "/" + newPath;
+
+    }
+
+    if ( fileSystem.nodes.find(newPath) != fileSystem.nodes.end()) {
+        currentPath = newPath;
+    } else {
+        std::cout << "Directory not found: " << newPath << std::endl;
+    
+    }
+}
+
+// Display contents of a file
+void Game::catFile(const std::vector<std::string>& args, const std::string& currentPath, const FileSystem& fileSystem) const {
+    if (args.empty()) {
+        std::cout << "Usage: cat [file]" << std::endl;
+        return;
+    }
+
+    std::string filePath = currentPath + "/" + args[0];
+
+    if (fileSystem.nodes.find(filePath) == fileSystem.nodes.end()) {
+        std::cout << "File not found: " << filePath << std::endl;
+        return;
+    }
+
+    const auto& node = fileSystem.nodes.at(filePath).at(args[0]);
+    if (node.type == "file") {
+        std::cout << node.content << std::endl;
+    } else {
+        std::cout << args[0] << " is not a file." << std::endl;
+    }
+} 
+
+// Function to handle talking to an NPC
+void Game::talkToNPC(const std::vector<std::string>& args, const std::string& currentPath, const std::map<std::string, std::vector<NPC>>& npcs) {
+    if (args.empty()) {
+        std::cout << "Usage: talk [npc]" << std::endl;
+        return;
+    }
+
+    const std::string& npcName = args[0];
+    if (npcs.find(currentPath) != npcs.end()) {
+        for (const NPC& npc : npcs.at(currentPath)) {
+            if (npc.name == npcName) {
+                std::cout << npc.dialogue << std::endl;
+                return;
+            }
+        }
+        std::cout << "No NPC named " << npcName << " found here." << std::endl;
+    } else {
+        std::cout << "No NPCs found in this location." << std::endl;
+    }
+}
 
 //The main function and entry point of my program 
 int main(){
-    //Prints a greeting to the user
+    // Create an instance of the Game class
+    Game game;
+
+    // Prints a greeting to the user
     std::cout << "Welcome to the LinuxRPG!" << std::endl;
+
+    // Start the main game loop
+    game.run();
+
     // Return a 0 to indicate successful program execution
     return 0;
+}
+
+// Function to display the player's inventory
+void Game::showInventory() const {
+    // Assuming you want to print the contents of the player's inventory
+    std::cout << "Inventory:" << std::endl;
+    for (const std::string& item : inventory) {
+        std::cout << "- " << item << std::endl;
+    }
+}
+
+// Function to display the active quests
+void Game::showQuests() const {
+    // Assuming you want to print the list of active quests
+    std::cout << "Active Quests:" << std::endl;
+    for (const Quest& quest : quests) {
+        std::cout << "- " << quest.name << ": " << quest.description << " [" << quest.status << "]" << std::endl;
+    }
 }
